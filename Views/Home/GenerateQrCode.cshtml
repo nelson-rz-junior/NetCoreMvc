@@ -1,0 +1,12 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Generate QR Code";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div>
+    <img alt="embedded QR code" src="data:image/png;base64,@Model" />
+</div>

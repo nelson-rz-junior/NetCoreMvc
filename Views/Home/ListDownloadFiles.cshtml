@@ -1,0 +1,63 @@
+﻿@using System.Text.Json
+@model IEnumerable<DownloadFileModel>
+@{
+    ViewData["Title"] = "Upload Files";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+@{
+    TempData.TryGetValue("FilesNotPermitted", out object? o);
+    var tempData = o == null ? null : JsonSerializer.Deserialize<List<string>>((string)o);
+}
+
+@if (tempData != null)
+{
+    <p class="alert alert-danger alert-dismissible fade show">
+        @foreach (var message in tempData)
+        {
+            <strong>@message</strong><br />
+        }
+        
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="40%">File Name</th>
+            <th width="30%">Size</th>
+            <th width="20%">Last Access</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.FileName<br>
+                        <img src="/files/@item.FileName" style="border-radius:2%" width="200px" height="200px" />
+                    </td>
+                    <td>@item.Size.ToString("N0") Bytes</td>
+                    <td>@item.LastAccess.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td class="text-end">
+                        <a asp-action="DownloadFiles" asp-route-fileName="@item.FileName" class="btn btn-sm btn-outline-danger">Download</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr class="text-center">
+                <td colspan="4">No download files found</td>
+            </tr>
+        }
+        
+    </tbody>
+</table>

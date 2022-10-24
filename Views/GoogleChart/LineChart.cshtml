@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Google Line Chart";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(loadData);
+
+        function loadData()
+        {
+            $.ajax({
+                url: '/GoogleChart/GetHousePriceBySize',
+                dataType: "json",
+                type: "GET",
+                success: function(data) {
+                    drawChart(data);
+                    return false;
+                },
+                error: function(xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    console.error(err.message);
+                }
+            });
+        }
+
+        function drawChart(data) {
+            let chartData = [];
+
+            // Header
+            chartData.push(['Price', 'Size']);
+
+            // Set data
+            data.forEach(function(item) {
+                chartData.push([item.squareMeters, item.priceInMillions]);
+            });
+
+            const dataTable = google.visualization.arrayToDataTable(chartData);
+
+            // Set Options
+            const options = {
+                title: 'House Prices vs. Size',
+                hAxis: { title: 'Square Meters' },
+                vAxis: { title: 'Price in Millions' },
+                legend: 'none'
+            };
+
+            // Draw
+            const chart = new google.visualization.LineChart(document.getElementById('myChart'));
+            chart.draw(dataTable, options);
+        }
+    </script>
+}

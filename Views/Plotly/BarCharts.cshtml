@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Bar Charts";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div id="myPlot" style="width:100%;max-width:700px"></div>
+
+@section Scripts
+{
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        (function () {
+            $.ajax({
+                url: '/Plotly/GetWorldWineProduction',
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    drawChart(data);
+                    return false;
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    console.error(err.message);
+                }
+            });
+        })();
+
+        function drawChart(data) {
+            let xArray = [];
+            let yArray = [];
+
+            $.each(data, function (index, value) {
+                xArray.push(value.country);
+                yArray.push(value.productionInMhl);
+            });
+
+            const dataChart = [{
+                x: xArray,
+                y: yArray,
+                type: "bar"
+            }];
+
+            const layout = { title: "World Wide Wine Production" };
+
+            Plotly.newPlot("myPlot", dataChart, layout);
+        }
+    </script>
+}

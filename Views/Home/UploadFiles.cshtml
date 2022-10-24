@@ -1,0 +1,49 @@
+﻿@model UploadFileModel
+@{
+    ViewData["Title"] = "Upload Files";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<form id="form" asp-action="UploadFiles" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="form-group col-6">
+            <input id="uploadBox" asp-for="Files" type="file" class="form-control" multiple />
+            <span id="spnUploadBox" asp-validation-for="Files" class="text-danger"></span>
+        </div>
+        <div class="form-group col-2">
+            <input id="btnUploadBox" type="button" class="btn btn-outline-primary" value="Upload Files" />
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const spnUploadBox = $('#spnUploadBox');
+            const errorMessage = 'Please select a file';
+
+            document.getElementById('btnUploadBox').addEventListener('click', function () {
+                if ($('#uploadBox').val() === '') {
+                    spnUploadBox.text(errorMessage);
+                }
+                else {
+                    document.getElementById('form').submit();
+                }
+            });
+
+            document.getElementById('uploadBox').addEventListener('change', function () {
+                if ($(this).val() === '') {
+                    spnUploadBox.text(errorMessage);
+                }
+                else {
+                    spnUploadBox.text('');
+                }
+            });
+        });
+    </script>
+}

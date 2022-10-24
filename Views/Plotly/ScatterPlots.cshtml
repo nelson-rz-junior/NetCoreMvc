@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Scatter Plots";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div id="myPlot" style="width:100%;max-width:700px"></div>
+
+@section Scripts
+{
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        (function() {
+            $.ajax({
+                url: '/Plotly/GetHousePriceBySize',
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    drawChart(data);
+                    return false;
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    console.error(err.message);
+                }
+            });
+        })();
+
+        function drawChart(data) {
+            let xArray = [];
+            let yArray = [];
+
+            $.each(data, function(index, value) {
+                xArray.push(value.squareMeters);
+                yArray.push(value.priceInMillions);
+            });
+
+            // Define Data
+            let dataTable = [{
+                x: xArray,
+                y: yArray,
+                mode: "markers"
+            }];
+
+            let xMinRange = Math.min(...xArray);
+            let xMaxRange = Math.max(...xArray);
+            let yMinRange = Math.min(...yArray);
+            let yMaxRange = Math.max(...yArray);
+
+            // Define Layout
+            let layout = {
+                xaxis: { range: [0.85 * xMinRange, 1.15 * xMaxRange], title: "Square Meters" },
+                yaxis: { range: [0.85 * yMinRange, 1.15 * yMaxRange], title: "Price in Millions" },
+                title: "House Prices vs. Size"
+            };
+
+            // Display using Plotly
+            Plotly.newPlot("myPlot", dataTable, layout);
+        }
+    </script>
+}
