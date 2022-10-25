@@ -41,14 +41,14 @@ public class EmailSender : IEmailSender
             Text = htmlMessage
         };
 
-        using var emailClient = new SmtpClient();
+        using var client = new SmtpClient();
 
-        emailClient.Connect("smtp.gmail.com", 465, true);
-        emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-        emailClient.Authenticate(smtpUsername, smtpPassword);
+        client.Connect("smtp.gmail.com", 465, true);
+        client.AuthenticationMechanisms.Remove("XOAUTH2");
+        client.Authenticate(smtpUsername, smtpPassword);
 
-        await emailClient.SendAsync(message);
+        await client.SendAsync(message);
 
-        emailClient.Disconnect(true);
+        client.Disconnect(true);
     }
 }

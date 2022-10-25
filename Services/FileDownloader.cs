@@ -4,9 +4,9 @@ public class FileDownloader : IFileDownloader
 {
     public (MemoryStream? ms, string? contentType, string? errorMessage) DownloadFile(string filePhysicalPath)
     {
-        if (System.IO.File.Exists(filePhysicalPath))
+        if (File.Exists(filePhysicalPath))
         {
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePhysicalPath);
+            byte[] fileBytes = File.ReadAllBytes(filePhysicalPath);
             MemoryStream ms = new(fileBytes);
 
             string extension = Path.GetExtension(filePhysicalPath);

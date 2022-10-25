@@ -3,6 +3,7 @@ using NetCoreMvc.Extensions;
 using NetCoreMvc.Models;
 using NetCoreMvc.Services;
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 namespace NetCoreMvc.Controllers;
@@ -29,11 +30,6 @@ public class HomeController : Controller
     }
 
     public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
     {
         return View();
     }
@@ -87,8 +83,6 @@ public class HomeController : Controller
         }
     }
 
-    [HttpGet]
-    [Route("[controller]/[action]/UploadFile")]
     public IActionResult UploadFiles()
     {
         return View();
@@ -160,36 +154,141 @@ public class HomeController : Controller
         return View(model);
     }
 
-    public IActionResult GenerateQrCode([FromServices] QRCodeService qrCodeService)
+    public IActionResult GenerateQrCode()
     {
-        string plaintText = "https://www.the-qrcode-generator.com/pt/";
-        int pixelsPerModule = 5;
-
-        string result = qrCodeService.GetQRCodeAsBase64(pixelsPerModule, plaintText);
-
-        return View(nameof(GenerateQrCode), result);
+        return View(new QRCodeModel());
     }
 
-    public async Task<IActionResult> GeneratePdf()
+    [HttpPost]
+    public IActionResult GenerateQrCode([FromServices] QRCodeService qrCodeService, QRCodeModel model)
     {
-        var model = new List<ExampleModel>
+        if (ModelState.IsValid)
         {
-            new ExampleModel { Id = 1, FirstName = "Mark", LastName = "Otto", Age = 30 },
-            new ExampleModel { Id = 2, FirstName = "Jacob", LastName = "Thornton", Age = 40 },
-            new ExampleModel { Id = 3, FirstName = "Larry the Bird", LastName = "", Age = 50 }
-        };
+            string plaintText = model.Url;
+            int pixelsPerModule = 7;
 
-        var html = await this.RenderViewAsync("ExamplePage", model);
-        var fileContents = _pdfGenerator.GeneratePdf(html);
+            string result = qrCodeService.GetQRCodeAsBase64(pixelsPerModule, plaintText);
 
-        return File(fileContents, "application/pdf");
+            return View(new QRCodeModel
+            {
+                QrCode = result
+            });
+        }
+
+        return View(model);
     }
 
-    public async Task<IActionResult> SendEmail()
+    public IActionResult GeneratePdf()
     {
-        await _emailSender.SendEmailAsync("Your Name", "jr.1403@hotmail.com", "Test", "<b>Hello World!</b>");
+        PdfModel model = new();
 
-        return Content("E-mail was sent succesfully.");
+        string viewPath = "Views/Home/ExamplePage.cshtml";
+        if (System.IO.File.Exists(viewPath))
+        {
+            model.RazorContent = System.IO.File.ReadAllText(viewPath);
+        }
+
+        string viewBackupPath = "Views/_Backup/ExamplePage.bak.cshtml";
+        ViewData["ShowRestoreBackup"] = System.IO.File.Exists(viewBackupPath);
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateRazorView(PdfModel model)
+    {
+        string viewPath = "Views/Home/ExamplePage.cshtml";
+        string viewBackupPath = "Views/_Backup/ExamplePage.bak.cshtml";
+
+        if (System.IO.File.Exists(viewPath))
+        {
+            System.IO.File.Copy(viewPath, viewBackupPath, true);
+
+            using StreamWriter sw = new(viewPath, false, Encoding.UTF8);
+            await sw.WriteAsync(model.RazorContent);
+
+            TempData["SuccessMessage"] = "Razor view was updated successfully";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Razor view not found";
+        }
+
+        return RedirectToAction(nameof(GeneratePdf));
+    }
+
+    [HttpPost]
+    public IActionResult RestoreBackupRazorView()
+    {
+        string viewPath = "Views/Home/ExamplePage.cshtml";
+        string viewBackupPath = "Views/_Backup/ExamplePage.bak.cshtml";
+
+        if (System.IO.File.Exists(viewPath) && System.IO.File.Exists(viewBackupPath))
+        {
+            System.IO.File.Copy(viewBackupPath, viewPath, true);
+            TempData["SuccessMessage"] = "Last backup was restored successfully";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Razor view not found";
+        }
+
+        return RedirectToAction(nameof(GeneratePdf));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GeneratePdf(PdfModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var exampleMode = new List<ExampleModel>
+            {
+                new ExampleModel { Id = 1, FirstName = "Mark", LastName = "Otto", Age = 30 },
+                new ExampleModel { Id = 2, FirstName = "Jacob", LastName = "Thornton", Age = 40 },
+                new ExampleModel { Id = 3, FirstName = "Larry the Bird", LastName = "", Age = 50 }
+            };
+
+            var html = await this.RenderViewAsync("ExamplePage", exampleMode);
+            var fileContents = _pdfGenerator.GeneratePdf(html);
+
+            if (fileContents != null)
+            {
+                return File(new MemoryStream(fileContents), "application/force-download", "Content.pdf");
+            }
+        }
+
+        return View(model);
+    }
+
+    public IActionResult SendEmail()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SendEmail(SendEmailModel model)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                await _emailSender.SendEmailAsync(model.FullName, model.Address, model.Subject, model.Message);
+                ViewData["SuccessMessage"] = "E-mail was sent succesfully";
+
+                return View();
+            }
+        }
+        catch (Exception ex)
+        {
+            ViewData["ErrorMessage"] = $"An error occurred while sending the e-mail message: {ex.Message}";
+        }
+
+        return View(model);
+    }
+
+    public IActionResult Privacy()
+    {
+        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

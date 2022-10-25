@@ -1,0 +1,47 @@
+﻿@model PdfModel
+@{
+    ViewData["Title"] = "Generate Pdf";
+
+    string? alertStyle = null;
+    string? alertMessage = null;
+
+    if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+    {
+        alertStyle = TempData["SuccessMessage"] != null ? "alert-success" : "alert-danger";
+        alertMessage = TempData["SuccessMessage"] != null ? TempData["SuccessMessage"] as string : TempData["ErrorMessage"] as string;
+    }
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(alertMessage))
+{
+    <p class="alert @alertStyle alert-dismissible fade show">
+        <strong>@alertMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </p>
+}
+
+<form asp-action="GeneratePdf" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                <textarea asp-for="RazorContent" class="form-control" style="height:500px;"></textarea>
+                <label asp-for="RazorContent" class="label-control"></label>
+                <span asp-validation-for="RazorContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-outline-primary w-25" value="Generate Pdf" />
+                <input type="submit" asp-action="UpdateRazorView" class="btn btn-outline-secondary w-25" value="Update Razor View" />
+
+                @if (ViewData["ShowRestoreBackup"] != null && (bool)ViewData["ShowRestoreBackup"])
+                {
+                    <input type="submit" asp-action="RestoreBackupRazorView" class="btn btn-outline-success w-25" value="Restore Last Backup" />
+                }
+            </div>
+        </div>
+    </div>
+</form>
