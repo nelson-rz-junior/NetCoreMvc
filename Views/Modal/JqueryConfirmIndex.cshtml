@@ -31,7 +31,8 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            icon: 'fa-regular fa-circle-check',
+                            //icon: 'fa-regular fa-circle-check', // Font awesome
+                            icon: 'bi bi-check-circle-fill', // Bootstrap icons
                             title: 'Sucesso',
                             content: '@ViewData["Success"]',
                             type: 'green',
@@ -49,7 +50,8 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            icon: 'fa-regular fa-circle-xmark',
+                            //icon: 'fa-regular fa-circle-xmark', // Font awesome
+                            icon: 'bi bi-exclamation-triangle-fill', // Bootstrap icons
                             title: 'Acesso Negado',
                             content: '@ViewData["Error"]',
                             type: 'red',
@@ -75,7 +77,8 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            icon: 'fa-solid fa-triangle-exclamation',
+                            //icon: 'fa-solid fa-triangle-exclamation', // Font awesome
+                            icon: 'bi bi-exclamation-circle-fill', // Bootstrap icons
                             title: 'Atenção',
                             content: '@ViewData["Warning"]',
                             type: 'orange',
@@ -93,7 +96,8 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            icon: 'fa-solid fa-circle-info',
+                            //icon: 'fa-solid fa-circle-info', // Font awesome
+                            icon: 'bi bi-info-circle-fill', // Bootstrap icons
                             title: 'Informação',
                             content: '@ViewData["Info"]',
                             type: 'blue',
