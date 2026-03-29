@@ -19,9 +19,9 @@
 {
     @section Scripts {
         <script type="text/javascript">
-            $(document).ready(function () {
-                var configuracaoPadrao = {
-                    theme: 'modern', 
+            function configurarAlerts(){
+                var defaultConfig = {
+                    theme: 'modern',
                     typeAnimated: true,
                     animation: 'scale',
                     closeAnimation: 'scale'
@@ -30,16 +30,15 @@
                 @if (ViewData["Success"] != null)
                 {
                     <text>
-                        $.alert($.extend({}, configuracaoPadrao, {
+                        $.alert($.extend({}, defaultConfig, {
                             icon: 'fa-regular fa-circle-check',
-                            title: 'Sucesso!',
+                            title: 'Sucesso',
                             content: '@ViewData["Success"]',
                             type: 'green',
-                            columnClass: 'col-md-6 col-md-offset-3',
                             buttons: {
-                                ok: { 
-                                    text: 'Continuar', 
-                                    btnClass: 'btn-green' 
+                                ok: {
+                                    text: 'Fechar',
+                                    btnClass: 'btn-green'
                                 }
                             }
                         }));
@@ -49,16 +48,23 @@
                 @if (ViewData["Error"] != null)
                 {
                     <text>
-                        $.confirm($.extend({}, configuracaoPadrao, {
+                        $.alert($.extend({}, defaultConfig, {
                             icon: 'fa-regular fa-circle-xmark',
                             title: 'Acesso Negado',
                             content: '@ViewData["Error"]',
                             type: 'red',
-                            columnClass: 'col-md-6 col-md-offset-3',
                             buttons: {
-                                entendi: {
-                                    text: 'Entendi',
-                                    btnClass: 'btn-red'
+                                ok: {
+                                    text: 'Sair',
+                                    btnClass: 'btn-red',
+                                    action: function() {
+                                        this.buttons.ok.setText('<span class="spinner-border spinner-border-sm"></span> Processando...');
+                                        this.buttons.ok.disable();
+
+                                        window.location.href = '@Url.Action("RedirecionarErro", "Modal")';
+
+                                        return false;
+                                    }
                                 }
                             }
                         }));
@@ -68,16 +74,15 @@
                 @if (ViewData["Warning"] != null)
                 {
                     <text>
-                        $.alert($.extend({}, configuracaoPadrao, {
+                        $.alert($.extend({}, defaultConfig, {
                             icon: 'fa-solid fa-triangle-exclamation',
                             title: 'Atenção',
                             content: '@ViewData["Warning"]',
                             type: 'orange',
-                            columnClass: 'col-md-6 col-md-offset-3',
                             buttons: {
-                                ok: { 
-                                    text: 'OK', 
-                                    btnClass: 'btn-orange' 
+                                ok: {
+                                    text: 'Entendi',
+                                    btnClass: 'btn-orange'
                                 }
                             }
                         }));
@@ -87,21 +92,24 @@
                 @if (ViewData["Info"] != null)
                 {
                     <text>
-                        $.alert($.extend({}, configuracaoPadrao, {
+                        $.alert($.extend({}, defaultConfig, {
                             icon: 'fa-solid fa-circle-info',
                             title: 'Informação',
                             content: '@ViewData["Info"]',
                             type: 'blue',
-                            columnClass: 'col-md-6 col-md-offset-3',
                             buttons: {
-                                ok: { 
-                                    text: 'OK', 
-                                    btnClass: 'btn-blue' 
+                                ok: {
+                                    text: 'OK',
+                                    btnClass: 'btn-blue'
                                 }
                             }
                         }));
                     </text>
                 }
+            }
+
+            $(document).ready(function () {
+                configurarAlerts();
             });
         </script>
     }

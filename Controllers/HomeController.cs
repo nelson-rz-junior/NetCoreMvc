@@ -8,26 +8,13 @@ using System.Text.Json;
 
 namespace NetCoreMvc.Controllers;
 
-public class HomeController : Controller
+public class HomeController(IEmailSender emailSender, IPdfGenerator pdfGenerator, IFileDownloader fileDownloader, IConfiguration configuration) : Controller
 {
-    private readonly IEmailSender _emailSender;
-    private readonly IPdfGenerator _pdfGenerator;
-    private readonly IFileDownloader _fileDownloader;
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<HomeController> _logger;
+    private readonly IEmailSender _emailSender = emailSender;
+    private readonly IPdfGenerator _pdfGenerator = pdfGenerator;
+    private readonly IFileDownloader _fileDownloader = fileDownloader;
+    private readonly IConfiguration _configuration = configuration;
     private readonly string[] permittedExtensions = { ".gif", ".jpg", ".jpeg", ".png" };
-
-    public HomeController(IEmailSender emailSender, IPdfGenerator pdfGenerator, IFileDownloader fileDownloader, IHostEnvironment hostEnvironment,
-        IConfiguration configuration, ILogger<HomeController> logger)
-    {
-        _emailSender = emailSender;
-        _pdfGenerator = pdfGenerator;
-        _fileDownloader = fileDownloader;
-        _hostEnvironment = hostEnvironment;
-        _configuration = configuration;
-        _logger = logger;
-    }
 
     public IActionResult Index()
     {
@@ -243,9 +230,9 @@ public class HomeController : Controller
         {
             var exampleMode = new List<ExampleModel>
             {
-                new ExampleModel { Id = 1, FirstName = "Mark", LastName = "Otto", Age = 30 },
-                new ExampleModel { Id = 2, FirstName = "Jacob", LastName = "Thornton", Age = 40 },
-                new ExampleModel { Id = 3, FirstName = "Larry the Bird", LastName = "", Age = 50 }
+                new() { Id = 1, FirstName = "Mark", LastName = "Otto", Age = 30 },
+                new() { Id = 2, FirstName = "Jacob", LastName = "Thornton", Age = 40 },
+                new() { Id = 3, FirstName = "Larry the Bird", LastName = "", Age = 50 }
             };
 
             var html = await this.RenderViewAsync("ExamplePage", exampleMode);
@@ -284,11 +271,6 @@ public class HomeController : Controller
         }
 
         return View(model);
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

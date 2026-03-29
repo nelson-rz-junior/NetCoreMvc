@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Bootbox";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <a asp-area="" asp-controller="Modal" asp-action="BootboxJsSuccess" class="btn btn-success">Success</a>
+        <a asp-area="" asp-controller="Modal" asp-action="BootboxJsError" class="btn btn-danger">Error</a>
+        <a asp-area="" asp-controller="Modal" asp-action="BootboxJsInfo" class="btn btn-info text-white">Information</a>
+        <a asp-area="" asp-controller="Modal" asp-action="BootboxJsWarning" class="btn btn-warning text-white">Warning</a>
+    </div>
+</div>
+
+@if (ViewData["Success"] != null || ViewData["Error"] != null || ViewData["Warning"] != null || ViewData["Info"] != null)
+{
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                @if (ViewData["Success"] != null)
+                {
+                    <text>
+                        bootbox.alert({
+                            title: "<span class='text-success'><i class='bi bi-check-circle-fill me-2'></i>Sucesso</span>",
+                            message: "@ViewData["Success"]",
+                            centerVertical: true,
+                            buttons: {
+                                ok: {
+                                    label: 'Fechar',
+                                    className: 'btn-success'
+                                }
+                            }
+                        });
+                    </text>
+                }
+            
+                @if (ViewData["Error"] != null)
+                {
+                    <text>
+                        bootbox.alert({
+                            title: "<span class='text-danger fs-5'><i class='bi bi-exclamation-triangle-fill me-2'></i>Acesso Negado</span>",
+                            message: "@ViewData["Error"]",
+                            centerVertical: true,
+                            closeButton: false,
+                            backdrop: 'static',
+                            buttons: {
+                                ok: {
+                                    label: 'Sair',
+                                    className: 'btn-danger btn-sair-modal px-4'
+                                }
+                            },
+                            callback: function() {
+                                var btnSair = $(this).find('.btn-sair-modal');
+
+                                btnSair.prop('disabled', true);
+                                btnSair.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...');
+
+                                window.location.href = '@Url.Action("RedirecionarErro", "Modal")';
+
+                                return false;
+                            }
+                        });
+                    </text>
+                }
+
+                @if (ViewData["Warning"] != null)
+                {
+                    <text>
+                        bootbox.alert({
+                            title: "<span class='text-warning'><i class='bi bi-exclamation-circle-fill me-2'></i>Atenção</span>",
+                            message: "@ViewData["Warning"]",
+                            centerVertical: true,
+                            buttons: {
+                                ok: {
+                                    label: 'Entendi',
+                                    className: 'btn-warning text-white'
+                                }
+                            }
+                        });
+                    </text>
+                }
+
+                @if (ViewData["Info"] != null)
+                {
+                    <text>
+                        bootbox.alert({
+                            title: "<span class='text-info'><i class='bi bi-info-circle-fill me-2'></i>Informação</span>",
+                            message: "@ViewData["Info"]",
+                            centerVertical: true,
+                            buttons: {
+                                ok: {
+                                    label: 'OK',
+                                    className: 'btn-info text-white'
+                                }
+                            }
+                        });
+                    </text>
+                }
+            });
+        </script>
+    }
+}

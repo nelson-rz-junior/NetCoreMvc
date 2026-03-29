@@ -4,6 +4,10 @@ namespace NetCoreMvc.Controllers;
 
 public class ModalController : Controller
 {
+    private const string AlertMessage = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. " +
+        "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', " +
+        "making it look like readable English.";
+
     public IActionResult JqueryConfirmIndex()
     {
         return View();
@@ -11,28 +15,28 @@ public class ModalController : Controller
 
     public IActionResult JqueryConfirmSuccess()
     {
-        ViewData["Success"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Success"] = AlertMessage;
 
         return View("JqueryConfirmIndex");
     }
 
     public IActionResult JqueryConfirmError()
     {
-        ViewData["Error"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Error"] = AlertMessage;
 
         return View("JqueryConfirmIndex");
     }
 
     public IActionResult JqueryConfirmInfo()
     {
-        ViewData["Info"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Info"] = AlertMessage;
 
         return View("JqueryConfirmIndex");
     }
 
     public IActionResult JqueryConfirmWarning()
     {
-        ViewData["Warning"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Warning"] = AlertMessage;
 
         return View("JqueryConfirmIndex");
     }
@@ -44,29 +48,35 @@ public class ModalController : Controller
 
     public IActionResult BootboxJsSuccess()
     {
-        ViewData["Success"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Success"] = AlertMessage;
 
         return View("BootboxJsIndex");
     }
 
     public IActionResult BootboxJsError()
     {
-        ViewData["Error"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Error"] = AlertMessage;
 
         return View("BootboxJsIndex");
     }
 
     public IActionResult BootboxJsInfo()
     {
-        ViewData["Info"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Info"] = AlertMessage;
 
         return View("BootboxJsIndex");
     }
 
     public IActionResult BootboxJsWarning()
     {
-        ViewData["Warning"] = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.";
+        ViewData["Warning"] = AlertMessage;
 
         return View("BootboxJsIndex");
+    }
+
+    public async Task<RedirectResult> RedirecionarErro()
+    {
+        await Task.Delay(2000);
+        return Redirect("https://www.google.com");
     }
 }

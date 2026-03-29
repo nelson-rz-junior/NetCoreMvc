@@ -15,4 +15,8 @@
     <PackageReference Include="QRCoder" Version="1.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\_Backup\" />
+  </ItemGroup>
+
 </Project>
