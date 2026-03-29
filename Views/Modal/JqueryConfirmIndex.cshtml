@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Jquery-confirm";
+}
+
+<div class="border-bottom mb-3">
+    <h3>@ViewData["Title"]</h3>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <a asp-area="" asp-controller="Modal" asp-action="JqueryConfirmSuccess" class="btn btn-success">Success</a>
+        <a asp-area="" asp-controller="Modal" asp-action="JqueryConfirmError" class="btn btn-danger">Error</a>
+        <a asp-area="" asp-controller="Modal" asp-action="JqueryConfirmInfo" class="btn btn-info text-white">Information</a>
+        <a asp-area="" asp-controller="Modal" asp-action="JqueryConfirmWarning" class="btn btn-warning text-white">Warning</a>
+    </div>
+</div>
+
+@if (ViewData["Success"] != null || ViewData["Error"] != null || ViewData["Warning"] != null || ViewData["Info"] != null)
+{
+    @section Scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var configuracaoPadrao = {
+                    theme: 'modern', 
+                    typeAnimated: true,
+                    animation: 'scale',
+                    closeAnimation: 'scale'
+                };
+
+                @if (ViewData["Success"] != null)
+                {
+                    <text>
+                        $.alert($.extend({}, configuracaoPadrao, {
+                            icon: 'fa-regular fa-circle-check',
+                            title: 'Sucesso!',
+                            content: '@ViewData["Success"]',
+                            type: 'green',
+                            columnClass: 'col-md-6 col-md-offset-3',
+                            buttons: {
+                                ok: { 
+                                    text: 'Continuar', 
+                                    btnClass: 'btn-green' 
+                                }
+                            }
+                        }));
+                    </text>
+                }
+            
+                @if (ViewData["Error"] != null)
+                {
+                    <text>
+                        $.confirm($.extend({}, configuracaoPadrao, {
+                            icon: 'fa-regular fa-circle-xmark',
+                            title: 'Acesso Negado',
+                            content: '@ViewData["Error"]',
+                            type: 'red',
+                            columnClass: 'col-md-6 col-md-offset-3',
+                            buttons: {
+                                entendi: {
+                                    text: 'Entendi',
+                                    btnClass: 'btn-red'
+                                }
+                            }
+                        }));
+                    </text>
+                }
+
+                @if (ViewData["Warning"] != null)
+                {
+                    <text>
+                        $.alert($.extend({}, configuracaoPadrao, {
+                            icon: 'fa-solid fa-triangle-exclamation',
+                            title: 'Atenção',
+                            content: '@ViewData["Warning"]',
+                            type: 'orange',
+                            columnClass: 'col-md-6 col-md-offset-3',
+                            buttons: {
+                                ok: { 
+                                    text: 'OK', 
+                                    btnClass: 'btn-orange' 
+                                }
+                            }
+                        }));
+                    </text>
+                }
+
+                @if (ViewData["Info"] != null)
+                {
+                    <text>
+                        $.alert($.extend({}, configuracaoPadrao, {
+                            icon: 'fa-solid fa-circle-info',
+                            title: 'Informação',
+                            content: '@ViewData["Info"]',
+                            type: 'blue',
+                            columnClass: 'col-md-6 col-md-offset-3',
+                            buttons: {
+                                ok: { 
+                                    text: 'OK', 
+                                    btnClass: 'btn-blue' 
+                                }
+                            }
+                        }));
+                    </text>
+                }
+            });
+        </script>
+    }
+}

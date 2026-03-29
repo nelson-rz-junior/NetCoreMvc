@@ -3,10 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - NetCoreMvc</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/NetCoreMvc.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
 </head>
 <body>
     <header>
@@ -61,8 +64,15 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Plotly" asp-action="DonutCharts">Donut Charts</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Modals
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Modal" asp-action="JqueryConfirmIndex">Jquery-confirm</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Modal" asp-action="BootboxJsIndex">Bootbox.js</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -77,12 +87,16 @@
 
     <footer class="border-top footer text-muted mt-3" style="background-color: #e3f2fd;">
         <div class="container">
-            &copy; @DateTime.Now.Year - NetCoreMvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - NetCoreMvc
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+    <script src="https://kit.fontawesome.com/bc0242af55.js" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
