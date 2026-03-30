@@ -1,5 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Jquery-confirm";
+
+    bool useFontAwesome = true; // Altere para false para usar ícones do Bootstrap
+
+    string classSuccess = useFontAwesome ? "fa-regular fa-circle-check" : "bi bi-check-circle-fill";
+    string classError = useFontAwesome ? "fa-regular fa-circle-xmark" : "bi bi-exclamation-triangle-fill";
+    string classWarning = useFontAwesome ? "fa-solid fa-triangle-exclamation" : "bi bi-exclamation-circle-fill";
+    string classInfo = useFontAwesome ? "fa-solid fa-circle-info" : "bi bi-info-circle-fill";
 }
 
 <div class="border-bottom mb-3">
@@ -15,11 +22,15 @@
     </div>
 </div>
 
+<form id="formLogout" action="@Url.Action("RedirecionarErro", "Modal")" method="post" class="d-none">
+    @Html.AntiForgeryToken()
+</form>
+
 @if (ViewData["Success"] != null || ViewData["Error"] != null || ViewData["Warning"] != null || ViewData["Info"] != null)
 {
     @section Scripts {
         <script type="text/javascript">
-            function configurarAlerts(){
+            function configureAlerts(){
                 var defaultConfig = {
                     theme: 'modern',
                     typeAnimated: true,
@@ -31,8 +42,7 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            //icon: 'fa-regular fa-circle-check', // Font awesome
-                            icon: 'bi bi-check-circle-fill', // Bootstrap icons
+                            icon: '@classSuccess',
                             title: 'Sucesso',
                             content: '@ViewData["Success"]',
                             type: 'green',
@@ -50,20 +60,19 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            //icon: 'fa-regular fa-circle-xmark', // Font awesome
-                            icon: 'bi bi-exclamation-triangle-fill', // Bootstrap icons
+                            icon: '@classError',
                             title: 'Acesso Negado',
                             content: '@ViewData["Error"]',
                             type: 'red',
                             buttons: {
                                 ok: {
-                                    text: 'Sair',
+                                    text: 'Encerrar Acesso',
                                     btnClass: 'btn-red',
                                     action: function() {
                                         this.buttons.ok.setText('<span class="spinner-border spinner-border-sm"></span> Processando...');
                                         this.buttons.ok.disable();
 
-                                        window.location.href = '@Url.Action("RedirecionarErro", "Modal")';
+                                        $('#formLogout').submit();
 
                                         return false;
                                     }
@@ -77,8 +86,7 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            //icon: 'fa-solid fa-triangle-exclamation', // Font awesome
-                            icon: 'bi bi-exclamation-circle-fill', // Bootstrap icons
+                            icon: '@classWarning',
                             title: 'Atenção',
                             content: '@ViewData["Warning"]',
                             type: 'orange',
@@ -96,8 +104,7 @@
                 {
                     <text>
                         $.alert($.extend({}, defaultConfig, {
-                            //icon: 'fa-solid fa-circle-info', // Font awesome
-                            icon: 'bi bi-info-circle-fill', // Bootstrap icons
+                            icon: '@classInfo',
                             title: 'Informação',
                             content: '@ViewData["Info"]',
                             type: 'blue',
@@ -113,7 +120,7 @@
             }
 
             $(document).ready(function () {
-                configurarAlerts();
+                configureAlerts();
             });
         </script>
     }

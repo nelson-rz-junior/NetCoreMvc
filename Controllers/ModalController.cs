@@ -74,6 +74,8 @@ public class ModalController : Controller
         return View("BootboxJsIndex");
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<RedirectResult> RedirecionarErro()
     {
         await Task.Delay(2000);
